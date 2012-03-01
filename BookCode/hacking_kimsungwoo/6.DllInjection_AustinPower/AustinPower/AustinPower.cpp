@@ -20,6 +20,8 @@ BOOL AustinPower::CreateAustinPower(char* szFileCmd, char* szDllName)
     {
         strncpy(szHookedDllName, szDllName, strlen(szDllName));
         DebugLoop();
+        CloseHandle(ProcessInfo.hThread);
+        CloseHandle(ProcessInfo.hProcess);
         return true;
     }
 
