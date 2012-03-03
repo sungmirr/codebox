@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <stddef.h>
 #include "AustinPower.h"
+#include <stdio.h>
 
 
 AustinPower::AustinPower()
@@ -23,6 +24,7 @@ BOOL AustinPower::CreateAustinPower(char* szFileCmd, char* szDllName)
         CloseHandle(ProcessInfo.hThread);
         CloseHandle(ProcessInfo.hProcess);
         return true;
+
     }
 
     return false;
@@ -32,6 +34,17 @@ void AustinPower::DebugLoop()
 {
     DEBUG_EVENT event;
     DWORD continueStatus;
+    /*
+    #define EXCEPTION_DEBUG_EVENT       1
+    #define CREATE_THREAD_DEBUG_EVENT   2
+    #define CREATE_PROCESS_DEBUG_EVENT  3
+    #define EXIT_THREAD_DEBUG_EVENT     4
+    #define EXIT_PROCESS_DEBUG_EVENT    5
+    #define LOAD_DLL_DEBUG_EVENT        6
+    #define UNLOAD_DLL_DEBUG_EVENT      7
+    #define OUTPUT_DEBUG_STRING_EVENT   8
+    #define RIP_EVENT                   9
+     */
 
     while(1)
     {
@@ -42,12 +55,36 @@ void AustinPower::DebugLoop()
         continueStatus = DBG_EXCEPTION_NOT_HANDLED;
 
         if(event.dwDebugEventCode == CREATE_PROCESS_DEBUG_EVENT)
+        {
+            printf("CREATE_PROCESS_DEBUG_EVENT\n");
             ProcessDbgInfo = event.u.CreateProcessInfo;          /////// CREATE_PROCESS_DEBUG_INFO StartAddress(entryPoint)
+            AddressOfBase = ProcessDbgInfo.lpStartAddress;
+        }
         else if(event.dwDebugEventCode == EXCEPTION_DEBUG_EVENT)
+        {
+            printf("EXCEPTION_DEBUG_EVENT\n");
             HandleException(&event, &continueStatus);
-
-        if(event.dwDebugEventCode == EXIT_PROCESS_DEBUG_EVENT)
+        }
+        else if(event.dwDebugEventCode == EXIT_PROCESS_DEBUG_EVENT)
+        {
+            printf("EXIT_PROCESS_DEBUG_EVENT\n");
             return;
+        }
+        else if(event.dwDebugEventCode == CREATE_THREAD_DEBUG_EVENT)
+            printf("CREATE_THREAD_DEBUG_EVENT\n");
+        else if(event.dwDebugEventCode == EXIT_THREAD_DEBUG_EVENT)
+            printf("EXIT_THREAD_DEBUG_EVENT\n");
+        else if(event.dwDebugEventCode == LOAD_DLL_DEBUG_EVENT)
+            printf("LOAD_DLL_DEBUG_EVENT\n");
+        else if(event.dwDebugEventCode == UNLOAD_DLL_DEBUG_EVENT)
+            printf("UNLOAD_DLL_DEBUG_EVENT\n");
+        else if(event.dwDebugEventCode == OUTPUT_DEBUG_STRING_EVENT)
+            printf("OUTPUT_DEBUG_STRING_EVENT\n");
+        else if(event.dwDebugEventCode == RIP_EVENT)
+            printf("RIP_EVENT\n");
+        else
+            printf("UNKNWON EVENT : 0x%08x\n", event.dwDebugEventCode);
+            
 
         ContinueDebugEvent(event.dwProcessId, event.dwThreadId, continueStatus);
     }
@@ -62,18 +99,54 @@ void AustinPower::HandleException(LPDEBUG_EVENT lpEvent, PDWORD continueStatus)
     {
         if(FFirstBreakpointHit == FALSE)
         {
+            //* 현재 EIP와 ProcessDbgInfo.lpStartAddress 확인
+            CONTEXT cxt;
+            cxt.ContextFlags = CONTEXT_FULL;
+            GetThreadContext(ProcessInfo.hThread, &cxt);
+            printf("First EXCEPTION_DEBUG_EVENT\n\teip=0x%08x\n\tCREATE_PROCESS_DEBUG_INFO.StartAddress=%08x\n\t"
+                        "CREATE_PROCESS_DEBUG_INFO.BaseAddress=0x%08x\n", 
+                        cxt.Eip, ProcessDbgInfo.lpStartAddress, ProcessDbgInfo.lpBaseOfImage);
+            //* end
             SetEntryPointBP();
             FFirstBreakpointHit = TRUE;
         }
         else if(exceptRect.ExceptionAddress == AddressOfBase)
         {
+            //* 현재 EIP와 ProcessDbgInfo.lpStartAddress 확인
+            CONTEXT cxt;
+            cxt.ContextFlags = CONTEXT_FULL;
+            GetThreadContext(ProcessInfo.hThread, &cxt);
+            printf("StartAddress EXCEPTION_DEBUG_EVENT\n\teip=0x%08x\n\tCREATE_PROCESS_DEBUG_INFO.StartAddress=%08x\n\t"
+                        "CREATE_PROCESS_DEBUG_INFO.BaseAddress=0x%08x\n", 
+                        cxt.Eip, ProcessDbgInfo.lpStartAddress, ProcessDbgInfo.lpBaseOfImage);
+            //* end
             RemoveEntryPointBP();
             InjectSpyDll();
         }
         else if(exceptRect.ExceptionAddress == TargetStubBP)
         {
+            //* 현재 EIP와 ProcessDbgInfo.lpStartAddress 확인
+            CONTEXT cxt;
+            cxt.ContextFlags = CONTEXT_FULL;
+            GetThreadContext(ProcessInfo.hThread, &cxt);
+            printf("TargetStubBP EXCEPTION_DEBUG_EVENT\n\teip=0x%08x\n\tCREATE_PROCESS_DEBUG_INFO.StartAddress=%08x\n\t"
+                        "CREATE_PROCESS_DEBUG_INFO.BaseAddress=0x%08x\n", 
+                        cxt.Eip, ProcessDbgInfo.lpStartAddress, ProcessDbgInfo.lpBaseOfImage);
+            //* end
             ReplaceOrginalPagesAndContext();
         }
+        else
+        {
+            //* 현재 EIP와 ProcessDbgInfo.lpStartAddress 확인
+            CONTEXT cxt;
+            cxt.ContextFlags = CONTEXT_FULL;
+            GetThreadContext(ProcessInfo.hThread, &cxt);
+            printf("BREAKPOINT????? EXCEPTION_DEBUG_EVENT\n\teip=0x%08x\n\tCREATE_PROCESS_DEBUG_INFO.StartAddress=%08x\n\t"
+                        "CREATE_PROCESS_DEBUG_INFO.BaseAddress=0x%08x\n", 
+                        cxt.Eip, ProcessDbgInfo.lpStartAddress, ProcessDbgInfo.lpBaseOfImage);
+            //* end
+        }
+
 
         *continueStatus = DBG_CONTINUE;
     }
@@ -86,8 +159,6 @@ void AustinPower::HandleException(LPDEBUG_EVENT lpEvent, PDWORD continueStatus)
 BOOL AustinPower::SetEntryPointBP()
 {
     DWORD cBytesMoved;
-    
-    AddressOfBase = ProcessDbgInfo.lpStartAddress;
 
     BOOL retValue = ReadProcessMemory(ProcessInfo.hProcess, AddressOfBase, 
                             &m__originalExeEntryPointOpcode, sizeof(m__originalExeEntryPointOpcode), &cBytesMoved);
@@ -125,8 +196,13 @@ BOOL AustinPower::InjectSpyDll(void)
         return FALSE;
 
     TargetStubBP = (PBYTE)TargetStub + offsetof(FAKE_LOADLIBRARY_CODE, instr_INT_3);
+    printf("*1 TargetStub 0x%08x, TargetStubBP 0x%08x\n", TargetStub, TargetStubBP);
+
 
     strcpy(SourceStub.data_DllName, szHookedDllName);
+
+    TargetStubBP = (PBYTE)TargetStub + offsetof(FAKE_LOADLIBRARY_CODE, instr_INT_3);
+    printf("*2 TargetStub 0x%08x, TargetStubBP 0x%08x\n", TargetStub, TargetStubBP);
 
     SourceStub.operand_PUSH_value = (DWORD)TargetStub + offsetof(FAKE_LOADLIBRARY_CODE, data_DllName);
 
@@ -140,13 +216,19 @@ BOOL AustinPower::InjectSpyDll(void)
 
     CONTEXT stubContext = OriginalThreadContext;
     stubContext.Eip = (DWORD)TargetStub;
-    SetThreadContext(ProcessDbgInfo.hThread, &stubContext);
+    printf("*InjectSpyDll complete NEW EIP=0x%08x\n", stubContext.Eip);
+    if(!SetThreadContext(ProcessDbgInfo.hThread, &stubContext))
+    {
+        printf("InjectSpydll::SetThreadContext fail");
+        return FALSE;
+    }
 
     return TRUE;
 }
 
 BOOL AustinPower::ReplaceOrginalPagesAndContext(void)
 {
+    printf("\tRestore context : EIP 0x%08x\n", OriginalThreadContext.Eip);
     if(!SetThreadContext(ProcessDbgInfo.hThread, &OriginalThreadContext))
         return FALSE;
 
