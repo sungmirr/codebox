@@ -19,7 +19,7 @@ BOOL AustinPower::CreateAustinPower(char* szFileCmd, char* szDllName)
                                 DEBUG_ONLY_THIS_PROCESS, 
                                 0, 0, &sInfo, &ProcessInfo))
     {
-        strncpy(szHookedDllName, szDllName, strlen(szDllName));
+        strncpy(szHookedDllName, szDllName, strlen(szDllName)+1);
         DebugLoop();
         CloseHandle(ProcessInfo.hThread);
         CloseHandle(ProcessInfo.hProcess);
@@ -201,8 +201,8 @@ BOOL AustinPower::InjectSpyDll(void)
 
     strcpy(SourceStub.data_DllName, szHookedDllName);
 
-    TargetStubBP = (PBYTE)TargetStub + offsetof(FAKE_LOADLIBRARY_CODE, instr_INT_3);
-    printf("*2 TargetStub 0x%08x, TargetStubBP 0x%08x\n", TargetStub, TargetStubBP);
+  //  TargetStubBP = (PBYTE)TargetStub + offsetof(FAKE_LOADLIBRARY_CODE, instr_INT_3);
+  //  printf("*2 TargetStub 0x%08x, TargetStubBP 0x%08x\n", TargetStub, TargetStubBP);
 
     SourceStub.operand_PUSH_value = (DWORD)TargetStub + offsetof(FAKE_LOADLIBRARY_CODE, data_DllName);
 
@@ -270,3 +270,4 @@ PVOID AustinPower::GetMemoryForLoadLibraryStub(void)
 
     return 0;
 }
+

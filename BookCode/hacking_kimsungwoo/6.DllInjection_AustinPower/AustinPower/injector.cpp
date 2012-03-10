@@ -5,5 +5,6 @@ void main()
 {
     AustinPower	au;
 
-    au.CreateAustinPower("calc.exe", "test.dll");
+    au.CreateAustinPower("calc.exe", "DummyDll.dll");
+
 }
