@@ -1,0 +1,2 @@
+HKEY_LOCAL_MACHIN\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows 
+AppInit_DLLs
