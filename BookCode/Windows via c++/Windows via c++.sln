@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "01-ErrorShow", "01-ErrorShow\01-ErrorShow.vcproj", "{93912510-8350-4679-9F3E-45127A04C8AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommonFiles", "CommonFiles", "{3F8E9EFE-140B-4DF5-A4DE-7E60B7779625}"
+	ProjectSection(SolutionItems) = preProject
+		CommonFiles\CmnHdr.h = CommonFiles\CmnHdr.h
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93912510-8350-4679-9F3E-45127A04C8AE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{93912510-8350-4679-9F3E-45127A04C8AE}.Debug|Win32.Build.0 = Debug|Win32
+		{93912510-8350-4679-9F3E-45127A04C8AE}.Release|Win32.ActiveCfg = Release|Win32
+		{93912510-8350-4679-9F3E-45127A04C8AE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
