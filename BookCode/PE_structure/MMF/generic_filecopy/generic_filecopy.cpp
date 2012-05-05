@@ -127,6 +127,10 @@ int  _tmain(int argc, TCHAR **argv)
     {
         ShowErrorMessage(hr);
     }
+    catch(...)
+    {
+        MessageBox(0, _T("Raise exception!!!"), NULL, 0);
+    }
 
     if(hSource != INVALID_HANDLE_VALUE)
         CloseHandle(hSource);
