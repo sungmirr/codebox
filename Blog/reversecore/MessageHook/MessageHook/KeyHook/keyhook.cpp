@@ -82,7 +82,7 @@ LRESULT CALLBACK KeyboardProc(int code, WPARAM wParam, LPARAM lParam)
 #if _DEBUG
     /*
     SYSTEM QUEUE에서 APPLICATION QUEUE로 오는 메세지를 HOOK한 결과
-     notepad의 경우aa
+     notepad의 경우('a' 버튼 누름)
      [7948] code : 0, wParam : 0x41, lParam : 0x1e0001
      [7948] code : 0, wParam : 0x41, lParam : 0xc01e0001
 
