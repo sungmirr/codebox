@@ -1,0 +1,3 @@
+EXPORTS
+    HookStart @1
+    HookStop @2

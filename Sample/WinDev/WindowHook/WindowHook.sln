@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hooker", "Hooker\Hooker.vcproj", "{DD7AE2BD-DF96-49B6-88EF-9AAAAEB0099A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CBTHook", "CBTHook\CBTHook.vcproj", "{133A447C-0664-4F4E-B949-F7FD84D19971}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DD7AE2BD-DF96-49B6-88EF-9AAAAEB0099A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DD7AE2BD-DF96-49B6-88EF-9AAAAEB0099A}.Debug|Win32.Build.0 = Debug|Win32
+		{DD7AE2BD-DF96-49B6-88EF-9AAAAEB0099A}.Release|Win32.ActiveCfg = Release|Win32
+		{DD7AE2BD-DF96-49B6-88EF-9AAAAEB0099A}.Release|Win32.Build.0 = Release|Win32
+		{133A447C-0664-4F4E-B949-F7FD84D19971}.Debug|Win32.ActiveCfg = Debug|Win32
+		{133A447C-0664-4F4E-B949-F7FD84D19971}.Debug|Win32.Build.0 = Debug|Win32
+		{133A447C-0664-4F4E-B949-F7FD84D19971}.Release|Win32.ActiveCfg = Release|Win32
+		{133A447C-0664-4F4E-B949-F7FD84D19971}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
