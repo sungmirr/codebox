@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Timer", "Timer\Timer.vcproj", "{9AFFE629-5B83-4E38-878E-442A3206375F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Timer_Callback", "Timer_Callback\Timer_Callback.vcproj", "{8159C149-E0B2-4D5E-B5C9-7B78A292510A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9AFFE629-5B83-4E38-878E-442A3206375F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9AFFE629-5B83-4E38-878E-442A3206375F}.Debug|Win32.Build.0 = Debug|Win32
+		{9AFFE629-5B83-4E38-878E-442A3206375F}.Release|Win32.ActiveCfg = Release|Win32
+		{9AFFE629-5B83-4E38-878E-442A3206375F}.Release|Win32.Build.0 = Release|Win32
+		{8159C149-E0B2-4D5E-B5C9-7B78A292510A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8159C149-E0B2-4D5E-B5C9-7B78A292510A}.Debug|Win32.Build.0 = Debug|Win32
+		{8159C149-E0B2-4D5E-B5C9-7B78A292510A}.Release|Win32.ActiveCfg = Release|Win32
+		{8159C149-E0B2-4D5E-B5C9-7B78A292510A}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
