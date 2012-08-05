@@ -1,0 +1,6 @@
+TARGETNAME=helloddk
+TARGETPATH=.
+TARGETTYPE=DRIVER
+
+
+SOURCES=helloddk.c

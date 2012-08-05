@@ -1,0 +1,31 @@
+ref> http://msbang.co.kr/80147933137
+
+0. http://www.hollistech.com/Resources/ddkbuild/ddkbuild.htm  <-- 여기서 최신버전 다운
+
+1. ddkbuild.bat 수정
+	타켓OS 정보
+        set WIN7BASE=C:\WinDDK\7600.16385.1  추가
+	set XPBASE=C:\WinDDK\7600.16385.1	
+	
+
+2. ddkbuild.bat 위치
+	C:\Program Files\Microsoft Visual Studio 9.0\VC\bin 
+        or 현재 작업중인 프로젝트 폴더
+
+3. VisualStudio 프로젝트 설정
+	새프로젝트->일반->메이크파일 프로젝트 생성
+	빌드명령줄 : ddkbuild -WIN7 checked . // TargetOS가 WIN7...
+	리빌드명령줄 : ddkbuild -WIN7 checked . - cwZ
+	릴리즈 버전은 checked를 free로 변경
+
+4. VisualStudio Directory 설정
+	include 파일
+	C:\WinDDK\7600.16385.1\inc\ddk		
+	C:\WinDDK\7600.16385.1\inc\mfc42
+	C:\WinDDK\7600.16385.1\inc\api
+	library 파일
+	C:\WinDDK\7600.16385.1\lib\win7\i386
+	C:\WinDDK\7600.16385.1\lib\wxp\i386
+
+
+
