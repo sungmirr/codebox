@@ -1,3 +1,6 @@
+i386
+objchk_*
+buildchk_*
 Debug
 Release
 *.manifest
