@@ -1,3 +1,5 @@
+*.err
+*.log
 i386
 objchk_*
 buildchk_*
