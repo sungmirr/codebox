@@ -1,0 +1,7 @@
+TARGETNAME=ConformSel
+TARGETPATH=.
+TARGETTYPE=DRIVER
+INCLUDE=..\..\include;
+
+SOURCES=prism.c \
+	conforming.c \

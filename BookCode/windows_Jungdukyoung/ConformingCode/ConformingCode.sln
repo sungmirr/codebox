@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SYS", "SYS\SYS.vcproj", "{3F5E47FC-C069-4034-8742-3B1CEFEBB22D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConformSel", "ConformSel\ConformSel.vcproj", "{A39A453B-F7F1-4095-B901-12115F1F1C73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F5E47FC-C069-4034-8742-3B1CEFEBB22D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3F5E47FC-C069-4034-8742-3B1CEFEBB22D}.Debug|Win32.Build.0 = Debug|Win32
+		{3F5E47FC-C069-4034-8742-3B1CEFEBB22D}.Release|Win32.ActiveCfg = Release|Win32
+		{3F5E47FC-C069-4034-8742-3B1CEFEBB22D}.Release|Win32.Build.0 = Release|Win32
+		{A39A453B-F7F1-4095-B901-12115F1F1C73}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A39A453B-F7F1-4095-B901-12115F1F1C73}.Debug|Win32.Build.0 = Debug|Win32
+		{A39A453B-F7F1-4095-B901-12115F1F1C73}.Release|Win32.ActiveCfg = Release|Win32
+		{A39A453B-F7F1-4095-B901-12115F1F1C73}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
