@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClassGUID", "ClassGUID\ClassGUID.vcproj", "{12F31666-08AA-4622-A051-0085899F206F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InterfaceGUID", "InterfaceGUID\InterfaceGUID.vcproj", "{399E5C20-AC55-422A-8EED-5EE2A637BE99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{12F31666-08AA-4622-A051-0085899F206F}.Debug|Win32.Build.0 = Debug|Win32
 		{12F31666-08AA-4622-A051-0085899F206F}.Release|Win32.ActiveCfg = Release|Win32
 		{12F31666-08AA-4622-A051-0085899F206F}.Release|Win32.Build.0 = Release|Win32
+		{399E5C20-AC55-422A-8EED-5EE2A637BE99}.Debug|Win32.ActiveCfg = Debug|Win32
+		{399E5C20-AC55-422A-8EED-5EE2A637BE99}.Debug|Win32.Build.0 = Debug|Win32
+		{399E5C20-AC55-422A-8EED-5EE2A637BE99}.Release|Win32.ActiveCfg = Release|Win32
+		{399E5C20-AC55-422A-8EED-5EE2A637BE99}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
