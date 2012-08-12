@@ -68,6 +68,32 @@ typedef struct _CODE_SEG_DESCRIPTOR
 }CODE_SEG_DESCRIPTOR, *PCODE_SEG_DESCRIPTOR;
 
 
+typedef struct _CALLGATE_DESCRIPTOR
+{
+    union
+    {
+        struct
+        {
+            DWORD dwValueLow; 
+            DWORD dwValueHigh;
+        };
+        struct
+        {		
+            unsigned short  Offset_0_15 : 16;
+            unsigned short  Selector	: 16;
+
+            unsigned char    Param_count : 4;
+            unsigned char    Dummy_bits  : 4;
+
+            unsigned char    Type        : 4;
+            unsigned char    S			 : 1;
+            unsigned char    DPL         : 2;
+            unsigned char    Present     : 1;
+
+            unsigned short   Offset_16_31 : 16;
+        };
+    };	
+}CALLGATE_DESCRIPTOR, *PCALLGATE_DESCRIPTOR;
 
 
 #endif

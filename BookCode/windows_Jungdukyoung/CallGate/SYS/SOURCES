@@ -1,0 +1,7 @@
+TARGETNAME=CallGate
+TARGETPATH=.
+TARGETTYPE=DRIVER
+INCLUDE=..\..\include;
+
+SOURCES=prism.c \
+        CallGate.c
