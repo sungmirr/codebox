@@ -1,3 +1,182 @@
+
+
+
+
+#include <windows.h>
+#include <winternl.h>
+#include <stdio.h>
+#define _NTDDK_
+#include "nativeAPI.h"
+typedef struct _RSYSTEM_PROCESS_INFORMATION 
+{
+    ULONG NextEntryOffset; // 다음 프로세스 정보 오프셋
+    ULONG NumberOfThreads; // 이 프로세스 포함된 스레드 개수
+    LARGE_INTEGER WorkingSetPrivateSize;
+    ULONG HardFaultCount;
+    ULONG NumberOfThreadsHighWatermark;
+    ULONGLONG CycleTime; // 프로세스 수행에 소모된 사이클 시간
+    LARGE_INTEGER CreateTime; // 생성 시간
+    LARGE_INTEGER UserTime; // 유저 모드에서 수행된 시간
+    LARGE_INTEGER KernelTime; // 커널 모드에서 수행된 시간
+    UNICODE_STRING ImageName; // 프로세스 이미지 이름
+    ULONG BasePriority;
+    HANDLE UniqueProcessId; // 프로세스 아이디
+    HANDLE InheritedFromUniqueProcessId; // 부모 프로세스 아이디
+    ULONG HandleCount;
+    ULONG SessionId;
+    ULONG_PTR UniqueProcessKey;
+    SIZE_T PeakVirtualSize;
+    SIZE_T VirtualSize;
+    ULONG PageFaultCount;
+    SIZE_T PeakWorkingSetSize;
+    SIZE_T WorkingSetSize;
+    SIZE_T QuotaPeakPagedPoolUsage;
+    SIZE_T QuotaPagedPoolUsage;
+    SIZE_T QuotaPeakNonPagedPoolUsage;
+    SIZE_T QuotaNonPagedPoolUsage;
+    SIZE_T PagefileUsage;
+    SIZE_T PeakPagefileUsage;
+    SIZE_T PrivatePageCount;
+    LARGE_INTEGER ReadOperationCount;
+    LARGE_INTEGER WriteOperationCount;
+    LARGE_INTEGER OtherOperationCount;
+    LARGE_INTEGER ReadTransferCount;
+    LARGE_INTEGER WriteTransferCount;
+    LARGE_INTEGER OtherTransferCount;
+} RSYSTEM_PROCESS_INFORMATION, *PRSYSTEM_PROCESS_INFORMATION;
+
+typedef struct _CLIENT_ID
+{
+    HANDLE UniqueProcess; // 프로세스 아이디
+    HANDLE UniqueThread; // 스레드 아이디
+} CLIENT_ID, *PCLIENT_ID;
+
+typedef struct _RSYSTEM_THREAD_INFORMATION 
+{
+    LARGE_INTEGER KernelTime; // 커널 모드에서 수행된 시간
+    LARGE_INTEGER UserTime; // 유저 모드에서 수행된 시간
+    LARGE_INTEGER CreateTime; // 생성 시간
+    ULONG WaitTime;
+    PVOID StartAddress; // 시작 주소
+    CLIENT_ID ClientId; // 프로세스/스레드 아이디
+    ULONG Priority; 
+    LONG BasePriority;
+    ULONG ContextSwitches; 
+    ULONG ThreadState; // 현재 스레드 수행 상태
+    ULONG WaitReason; // 대기 사유
+} RSYSTEM_THREAD_INFORMATION, *PRSYSTEM_THREAD_INFORMATION;
+
+#define STATUS_INFO_LENGTH_MISMATCH 0xC0000004
+#define XGetPtr(base, offset) ((PVOID)((ULONG_PTR) (base) + (ULONG_PTR) (offset)))
+
+typedef 
+NTSTATUS 
+(WINAPI *NtQuerySystemInformationT)
+(SYSTEM_INFORMATION_CLASS, PVOID, ULONG, PULONG);
+
+template <class T>
+class Visitor
+{
+public:
+    virtual BOOL Visit(T &data) = 0;
+};
+
+typedef Visitor<RSYSTEM_THREAD_INFORMATION> ThreadVisitor;
+
+BOOL NtqsiEnumThreads(ThreadVisitor &visitor)
+{
+    HMODULE ntdll = GetModuleHandleW(L"ntdll.dll");
+    NtQuerySystemInformationT pNTQSI;
+    pNTQSI = (NtQuerySystemInformationT) 
+        GetProcAddress(ntdll, "NtQuerySystemInformation");
+
+    const int NTQSI_MAX_TRY = 20;
+    const ULONG NTQSI_BUFFER_MARGIN = 4096;
+    const ULONG NTQSI_BUFFER_INIT_SIZE = 200000;
+
+    ULONG buffer_size = NTQSI_BUFFER_INIT_SIZE;
+    PUCHAR buffer = new UCHAR[buffer_size];
+    ULONG req_size;
+    NTSTATUS s;
+
+    for(int i=0; i<NTQSI_MAX_TRY; ++i)
+    {
+        s = pNTQSI(SystemProcessInformation, buffer, buffer_size, &req_size);
+        if(NT_SUCCESS(s))
+            break;
+
+        if(buffer)
+            delete [] buffer;
+
+        if(s == STATUS_INFO_LENGTH_MISMATCH)
+        {
+            buffer_size = req_size + NTQSI_BUFFER_MARGIN;
+            buffer = new UCHAR[buffer_size];
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+
+    PRSYSTEM_PROCESS_INFORMATION p = (PRSYSTEM_PROCESS_INFORMATION) buffer;
+
+    while(p->NextEntryOffset != 0)
+    {
+        PRSYSTEM_THREAD_INFORMATION t;
+        t = (PRSYSTEM_THREAD_INFORMATION) XGetPtr(p, sizeof(*p));
+        for(ULONG i=0; i<p->NumberOfThreads; ++i)
+        {
+            try
+            {
+                if(!visitor.Visit(t[i]))
+                {
+                    if(buffer)
+                        delete [] buffer;
+
+                    return TRUE;
+                }
+            }
+            catch(...)
+            {
+                if(buffer)
+                    delete [] buffer;
+
+                return FALSE;
+            }
+        }
+
+        p = (PRSYSTEM_PROCESS_INFORMATION) XGetPtr(p, p->NextEntryOffset);
+    } 
+
+    if(buffer)
+        delete [] buffer;
+
+    return TRUE;
+}
+
+class ThreadPrinter : public ThreadVisitor
+{
+public:
+    virtual BOOL Visit(RSYSTEM_THREAD_INFORMATION &data)
+    {
+        printf("PID => %5d TID => %5d\n"
+            , data.ClientId.UniqueProcess
+            , data.ClientId.UniqueThread);
+
+        return TRUE;
+    }
+};
+
+int main()
+{
+    ThreadPrinter printer;
+    NtqsiEnumThreads(printer);
+    return 0;
+}
+
+#if 0
+
 /*++
     ListProcessAndThread.exe
 
@@ -94,3 +273,5 @@ void ShowErrorMessage(HRESULT hr)
     MessageBox(0, (LPCTSTR)lpMsgBuff, NULL, 0);
     LocalFree(lpMsgBuff);
 }
+
+#endif

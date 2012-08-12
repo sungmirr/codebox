@@ -229,7 +229,7 @@ void CConformSelDlg::OnBnClickedButtonTest()
 
     __asm
     {
-        call fword ptr [farcall]
+        call fword ptr [farcall]            // 0x002BF564  a0 15 94 00 e0 00 : offset - 0x009415a0, sel - 0xe0 =>RING 0
     }
 }
 
