@@ -1,0 +1,7 @@
+TARGETNAME=PrintIDT
+TARGETPATH=.
+TARGETTYPE=DRIVER
+INCLUDES=..\..\include;
+
+SOURCES=prism.c	\
+        idt.c

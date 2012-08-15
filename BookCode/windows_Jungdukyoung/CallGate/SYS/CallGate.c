@@ -68,7 +68,7 @@ NTSTATUS CreateCallGate(CALLGATE_INFO *pCallGateInfo)
     code_desc.Conforming = 0;
     code_desc.Code_data = 1;
     code_desc.S = 1;
-    code_desc.DPL = 0;
+    code_desc.DPL = 0;              // DPL : Ring0 
     code_desc.Present = 1;
 
     code_desc.Limit_16_19 = 0xF;

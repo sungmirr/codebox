@@ -95,5 +95,26 @@ typedef struct _CALLGATE_DESCRIPTOR
     };	
 }CALLGATE_DESCRIPTOR, *PCALLGATE_DESCRIPTOR;
 
+#pragma pack(1)
+
+typedef struct _IDTR
+{
+    short Limit;
+    unsigned int Base;
+}IDTR, *PIDTR;
+
+typedef struct _IDT_ENTRY
+{
+    unsigned short Offset_0_15;
+    unsigned short Selector;
+    unsigned char  Reserved;
+    unsigned char  Type:4;  // 1111(Trap Gate), 1110(Interrupt Gate)
+    unsigned char  Always0:1;
+    unsigned char  DPL:2;
+    unsigned char  Present:1;
+    unsigned short Offset_16_31;
+}IDT_ENTRY, *PIDT_ENTRY;
+
+#pragma pack()
 
 #endif

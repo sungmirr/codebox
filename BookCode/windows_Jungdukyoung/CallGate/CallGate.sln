@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SYS", "SYS\SYS.vcproj", "{9938EA90-ED59-4F55-B4E0-40C3331A8A72}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CallGateTSS", "CallGateTSS\CallGateTSS.vcproj", "{ACE7390B-5D21-4636-810C-54D6220679D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{9938EA90-ED59-4F55-B4E0-40C3331A8A72}.Debug|Win32.Build.0 = Debug|Win32
 		{9938EA90-ED59-4F55-B4E0-40C3331A8A72}.Release|Win32.ActiveCfg = Release|Win32
 		{9938EA90-ED59-4F55-B4E0-40C3331A8A72}.Release|Win32.Build.0 = Release|Win32
+		{ACE7390B-5D21-4636-810C-54D6220679D4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ACE7390B-5D21-4636-810C-54D6220679D4}.Debug|Win32.Build.0 = Debug|Win32
+		{ACE7390B-5D21-4636-810C-54D6220679D4}.Release|Win32.ActiveCfg = Release|Win32
+		{ACE7390B-5D21-4636-810C-54D6220679D4}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SYS", "SYS\SYS.vcproj", "{3FF417B8-AD29-44A0-AD7F-2518744F7BD8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PrintIDT", "PrintIDT\PrintIDT.vcproj", "{944A6920-6BFD-490E-AC65-9179D0B1CBB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3FF417B8-AD29-44A0-AD7F-2518744F7BD8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3FF417B8-AD29-44A0-AD7F-2518744F7BD8}.Debug|Win32.Build.0 = Debug|Win32
+		{3FF417B8-AD29-44A0-AD7F-2518744F7BD8}.Release|Win32.ActiveCfg = Release|Win32
+		{3FF417B8-AD29-44A0-AD7F-2518744F7BD8}.Release|Win32.Build.0 = Release|Win32
+		{944A6920-6BFD-490E-AC65-9179D0B1CBB2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{944A6920-6BFD-490E-AC65-9179D0B1CBB2}.Debug|Win32.Build.0 = Debug|Win32
+		{944A6920-6BFD-490E-AC65-9179D0B1CBB2}.Release|Win32.ActiveCfg = Release|Win32
+		{944A6920-6BFD-490E-AC65-9179D0B1CBB2}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
