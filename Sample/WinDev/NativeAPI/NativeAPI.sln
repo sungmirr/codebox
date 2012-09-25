@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NtQueryInformationThread", "NtQueryInformationThread\NtQueryInformationThread.vcproj", "{AE830B89-75FA-4852-82A3-C7F718A8328F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NtQuerySystemInformation", "NtQuerySystemInformation\NtQuerySystemInformation.vcproj", "{959F9090-0F2F-49A8-9464-6EC0F057C9B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -13,6 +15,10 @@ Global
 		{AE830B89-75FA-4852-82A3-C7F718A8328F}.Debug|Win32.Build.0 = Debug|Win32
 		{AE830B89-75FA-4852-82A3-C7F718A8328F}.Release|Win32.ActiveCfg = Release|Win32
 		{AE830B89-75FA-4852-82A3-C7F718A8328F}.Release|Win32.Build.0 = Release|Win32
+		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Debug|Win32.Build.0 = Debug|Win32
+		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Release|Win32.ActiveCfg = Release|Win32
+		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
