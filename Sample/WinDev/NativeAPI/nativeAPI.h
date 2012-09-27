@@ -9,6 +9,7 @@ extern "C" {
 typedef LONG NTSTATUS, *PNTSTATUS, **PPNTSTATUS;
 #define NT_SUCCESS(Status) ((NTSTATUS)(Status) >= 0)
 #define STATUS_INFO_LENGTH_MISMATCH      ((NTSTATUS)0xC0000004L)
+#define GetPtr(base, offset) ((PVOID)((ULONG_PTR) (base) + (ULONG_PTR) (offset)))
 
 
 #ifndef _NTDDK_
@@ -173,17 +174,17 @@ typedef struct _OBJECT_ATTRIBUTES {
 typedef OBJECT_ATTRIBUTES *POBJECT_ATTRIBUTES;
 
 typedef struct _SYSTEM_THREADS {
-	LARGE_INTEGER KernelTime;
-	LARGE_INTEGER UserTime;
-	LARGE_INTEGER CreateTime;
+	LARGE_INTEGER KernelTime;   // 커널 모드에서 수행된 시간
+	LARGE_INTEGER UserTime;     // 유저 모드에서 수행된 시간
+	LARGE_INTEGER CreateTime;   // 생성 시간
 	ULONG WaitTime;
-	PVOID StartAddress;
-	CLIENT_ID ClientId;
+	PVOID StartAddress;         // 시작 주소
+	CLIENT_ID ClientId;         // 프로세스&스레드 아이디
 	KPRIORITY Priority;
 	KPRIORITY BasePriority;
 	ULONG ContextSwitchCount;
-	THREAD_STATE State;
-	KWAIT_REASON WaitReason;
+	THREAD_STATE State;         // 현재 스레드 수행 상태
+	KWAIT_REASON WaitReason;    // 대기 이유
 }SYSTEM_THREADS, *PSYSTEM_THREADS;
 
 
@@ -204,6 +205,46 @@ typedef struct _SYSTEM_PROCESSES { 	//Information 5
 	IO_COUNTERS IoCounters;
 	SYSTEM_THREADS Threads[1];
 }SYSTEM_PROCESSES, *PSYSTEM_PROCESSES;
+
+
+typedef struct _RSYSTEM_PROCESS_INFORMATION     // Information 5, _SYSTEM_PROCESSES와 같다
+{
+    ULONG NextEntryOffset; // 다음 프로세스 정보 오프셋
+    ULONG NumberOfThreads; // 이 프로세스 포함된 스레드 개수
+    LARGE_INTEGER WorkingSetPrivateSize;
+    ULONG HardFaultCount;
+    ULONG NumberOfThreadsHighWatermark;
+    ULONGLONG CycleTime; // 프로세스 수행에 소모된 사이클 시간
+    LARGE_INTEGER CreateTime; // 생성 시간
+    LARGE_INTEGER UserTime; // 유저 모드에서 수행된 시간
+    LARGE_INTEGER KernelTime; // 커널 모드에서 수행된 시간
+    UNICODE_STRING ImageName; // 프로세스 이미지 이름
+    ULONG BasePriority;
+    HANDLE UniqueProcessId; // 프로세스 아이디
+    HANDLE InheritedFromUniqueProcessId; // 부모 프로세스 아이디
+    ULONG HandleCount;
+    ULONG SessionId;
+    ULONG_PTR UniqueProcessKey;
+    SIZE_T PeakVirtualSize;
+    SIZE_T VirtualSize;
+    ULONG PageFaultCount;
+    SIZE_T PeakWorkingSetSize;
+    SIZE_T WorkingSetSize;
+    SIZE_T QuotaPeakPagedPoolUsage;
+    SIZE_T QuotaPagedPoolUsage;
+    SIZE_T QuotaPeakNonPagedPoolUsage;
+    SIZE_T QuotaNonPagedPoolUsage;
+    SIZE_T PagefileUsage;
+    SIZE_T PeakPagefileUsage;
+    SIZE_T PrivatePageCount;
+    LARGE_INTEGER ReadOperationCount;
+    LARGE_INTEGER WriteOperationCount;
+    LARGE_INTEGER OtherOperationCount;
+    LARGE_INTEGER ReadTransferCount;
+    LARGE_INTEGER WriteTransferCount;
+    LARGE_INTEGER OtherTransferCount;
+} RSYSTEM_PROCESS_INFORMATION, *PRSYSTEM_PROCESS_INFORMATION;
+
 
 typedef struct _SYSTEM_HANDLE_INFORMATION {	//Information 16
     ULONG ProcessId;

@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NtQueryInformationThread", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NtQuerySystemInformation", "NtQuerySystemInformation\NtQuerySystemInformation.vcproj", "{959F9090-0F2F-49A8-9464-6EC0F057C9B3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NtQuerySystemInformation2", "NtQuerySystemInformation2\NtQuerySystemInformation2.vcproj", "{158F74A0-ED2A-4DE7-BF59-BDB3813AC6BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Debug|Win32.Build.0 = Debug|Win32
 		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Release|Win32.ActiveCfg = Release|Win32
 		{959F9090-0F2F-49A8-9464-6EC0F057C9B3}.Release|Win32.Build.0 = Release|Win32
+		{158F74A0-ED2A-4DE7-BF59-BDB3813AC6BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{158F74A0-ED2A-4DE7-BF59-BDB3813AC6BE}.Debug|Win32.Build.0 = Debug|Win32
+		{158F74A0-ED2A-4DE7-BF59-BDB3813AC6BE}.Release|Win32.ActiveCfg = Release|Win32
+		{158F74A0-ED2A-4DE7-BF59-BDB3813AC6BE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

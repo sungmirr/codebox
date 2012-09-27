@@ -4,7 +4,8 @@
 
 <2012.9.26 06:50>
     NtQuerySystemInformation
-      프로세스와 스레드 정보 얻기
+      프로세스와 스레드 정보 얻기(SystemProcessesAndThreadsInformation,5)
+        
       BookCode\windows_Jungdukyoung\ListProcessAndThread에서 옮김
 --*/
 
