@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="SwapTemp"
-	ProjectGUID="{80765DDD-43BE-4FB2-920C-E0C475AE345E}"
-	RootNamespace="SwapTemp"
+	Name="NonTypeArgument"
+	ProjectGUID="{9F15A06B-2691-4C8D-9D0C-59D2EEEEDFC7}"
+	RootNamespace="NonTypeArgument"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -171,7 +171,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\SwapTemp.cpp"
+				RelativePath=".\NonTypeArgument.cpp"
 				>
 			</File>
 		</Filter>

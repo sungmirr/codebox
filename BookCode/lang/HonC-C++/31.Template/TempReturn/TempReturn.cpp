@@ -43,6 +43,8 @@ void LongFunc(T a)
 
 // 템플릿 함수의 명시적 구체화
 template void LongFunc<float>(float);
+// 템플릿 클래스의 명시적 구체화
+// template class PosValue<float>;
 
 void main()
 {
