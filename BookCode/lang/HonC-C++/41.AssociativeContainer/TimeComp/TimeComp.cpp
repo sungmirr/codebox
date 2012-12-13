@@ -50,6 +50,6 @@ void main()
     Times.insert(Time(2,3,4));
 
     for(it=Times.begin(); it!=Times.end(); ++it)
-        (*it).OutTime();
+        it->OutTime();      //(*it).OutTime();
 }
 

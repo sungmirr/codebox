@@ -56,27 +56,12 @@
     - []연산자는 키가 없으면 삽입, 존재할 경우 해당 요소의 값에 대한 리퍼런스 리턴
     - 키는 절대 변경안된다, 값은 변경가능하다
 
-    ================================================================================
-    pair
-    - make_pair(val1,val2) : 템플릿함수, pair를 생성해 리턴
-    - template<class T1, class T2>
-      struct pair
-      {
-        typedef T1 first_type;
-        typedef T2 second_type;
-        T1 first;
-        T2 second;
-        pair() : first(T1()), second(T2()) {}
-        pair(const T1& v1, const T2& v2) : first(v1), second(v2) {}
-      };
-    ================================================================================
-
 --*/ 
 #include <iostream>
 #include <string>
 #include <map>
 using namespace std;
-
+/*
 void main()
 {
     // 키: string, 값: int
@@ -108,10 +93,77 @@ void main()
         cout << it->first << "의 인구는 " << it->second << "만 명이다." << endl;
 
     // 수정
-    m["부산"]=5;   // 없으면 삽입 있으면 삭제
+    m["부산"]=5;   // 없으면 삽입 있으면 수정
     it=m.find("부산");
     cout << it->first << "의 인구는 " << it->second << "만 명이다." << endl;
 
     it->second=555;
     cout << it->first << "의 인구는 " << it->second << "만 명이다." << endl;
+}
+*/
+
+class EST
+{
+    friend struct ESTComp;
+private:
+    int x;
+    int y;
+    int z;
+public:
+    EST(int ax, int by, int az) : x(ax), y(by), z(az) { }
+    void PrintEST()
+    {
+        cout << x << " " << y << " " << z << endl;
+    }
+
+};
+
+
+struct ESTComp
+{
+    bool operator<(const EST &a, EST &b) const
+    {
+        if(b.x > a.x)
+        {
+            return true;
+        }
+        else if(b.x == a.x)
+        {
+            if(b.y > a.y)
+            {
+                return true;
+            }
+            else if(b.y==a.y)
+            {
+                if(b.z > a.y)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+};
+
+
+
+
+void main()
+{
+    map<string,EST> m;
+
+    m.insert(make_pair("AAA", EST(1,2,3)));
+    m.insert(make_pair("BBB", EST(2,2,3)));
+    m.insert(make_pair("CCC", EST(4,2,3)));
+    m.insert(make_pair("DDD", EST(4,2,6)));
+    m.insert(make_pair("EEE", EST(4,1,3)));
+
+    map<string,EST>::iterator it;
+    for(it=m.begin(); it!=m.end(); ++it)
+    {
+        cout << it->first << " : ";
+        it->second.PrintEST();
+    }
+
+    it = find_if()
+
 }

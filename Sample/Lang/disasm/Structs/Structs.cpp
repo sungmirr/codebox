@@ -14,6 +14,11 @@
       
     - /Od
 
+    memory에 위치 순서
+    (-) x[5]
+        y
+    (+) z
+
 --*/
 
 #include <stdio.h>

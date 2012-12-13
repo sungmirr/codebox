@@ -44,7 +44,7 @@ void main()
     Times.insert(Time(2,3,4));
 
     for(it=Times.begin(); it!=Times.end(); ++it)
-        (*it).OutTime();
+        it->OutTime();      //(*it).OutTime();
 
 
     cout << "-------------------------------------------------" << endl;
@@ -55,5 +55,5 @@ void main()
     GTimes.insert(Time(2,3,4));
 
     for(git=GTimes.begin(); git!=GTimes.end(); ++git)
-        (*git).OutTime();
+        git->OutTime();     //(*git).OutTime();
 }

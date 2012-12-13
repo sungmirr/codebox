@@ -6,7 +6,7 @@
     셋에 객체의 포인터 저장
     - 디폴트 셋은 정렬할때 포인터를 기준으로 less 비교..정렬되기때문에 의미가 없다
     - <연산자를 오버로딩 할 경우 클래스의 기본구조가 변경되므로 비추
-    - 함수객체를 정의해서 set<PtrObject *, 함수객체>로 객체 정렬
+    - 함수객체를 정의해서 set<PtrObject *, 이항함수객체>로 객체 정렬
     
 
     cf)
@@ -58,7 +58,7 @@ void main()
     Times.insert(new Time(2,3,4));
 
     for(it=Times.begin(); it!=Times.end(); ++it)
-        (**it).OutTime();
+        *it->OutTime();         //(**it).OutTime();
 
     for(it=Times.begin(); it!=Times.end(); ++it)
         delete *it;

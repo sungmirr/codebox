@@ -86,6 +86,6 @@ void main()
     if(it!=King.end())
     {
         cout << "검색되었음" << endl;
-        (*it).OutPresident(); 
+        it->OutPresident();//(*it).OutPresident(); 
     }
 }

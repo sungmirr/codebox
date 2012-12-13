@@ -18,7 +18,7 @@
 
 
     1-2 삽입반복자를 생성하여 리턴하는 템플릿함수
-    insert_iterator<Container> inserter(Container& Cont, Iterator it);
+    insert_iterator<Container> inserter(Container& Cont, Iterator it);      // 인자1: 컨테이너, 인자2: 삽입위치
     front_insert_iterator<Container> front_inserter(Container& Cont);
     back_insert_iterator<Container> back_inserter(Container& Cont);
 
