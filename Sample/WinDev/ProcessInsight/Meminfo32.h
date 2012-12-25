@@ -33,7 +33,7 @@ public:
     DWORD GetType();
     DWORD GetProtect();
     static bool ProtectToStringW(DWORD protect, LPWSTR buf, size_t bufsize);
-    static bool GetSizeToUnit(ULONG size, LPWSTR buf, size_t bufsize);
+    static bool SizeToStringW(DOUBLE size, LPWSTR buf, size_t bufsize);
     bool AddressToModuleNameW(LPWSTR buf, size_t bufsize);
 };
 

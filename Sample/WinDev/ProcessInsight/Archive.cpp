@@ -24,11 +24,11 @@ bool Archive::SetModuleList(ULONG pid, PNX_PROCESSINFO &pi)
         while(meminfo.InitImageMeminfo32(me32.th32ProcessID, addr))
         {
             mi = new NX_MODULEINFO;
-            if(!mi)
-                goto $cleanup;
+            if(!mi)	goto $cleanup;
+			memset(mi, 0, sizeof(NX_MODULEINFO));
             mi->address = meminfo.GetBaseAddress();
-            mi->protection = meminfo.GetProtect();
-            Meminfo32::GetSizeToUnit(meminfo.GetRegionSize(), mi->szSize, sizeof(mi->szSize));
+			Meminfo32::ProtectToStringW(meminfo.GetProtect(), mi->szProtect, sizeof(mi->szProtect));
+            Meminfo32::SizeToStringW(meminfo.GetRegionSize(), mi->szSize, sizeof(mi->szSize));
             StringCbCopyW(mi->name, sizeof(mi->name), me32.szModule);
             pi->mlist.push_back(mi);
             addr = GetPtr(addr, meminfo.GetRegionSize());
@@ -68,12 +68,11 @@ bool Archive::SetThreadList(ULONG pid, PNX_PROCESSINFO &pi)
         if(te32.th32OwnerProcessID == pid)
         {
             ti = new NX_THREADINFO;
-            if(!ti)
-                goto $cleanup;
-            
+            if(!ti)	goto $cleanup;
             memset(ti, 0, sizeof(NX_THREADINFO));
+
             ti->tid = te32.th32ThreadID;
-            ti->priority = te32.tpBasePri;
+			ThreadPriorityToStringW(GetThreadPriorityClass(ti->tid), ti->szPriority, sizeof(ti->szPriority));
             GetThreadStartAddress(ti->tid, &ti->startaddress);
             if(ti->startaddress)
             {
@@ -127,7 +126,7 @@ bool Archive::SetProcessList(void)
         StringCbCopyW(pi->name, sizeof(pi->name), pe32.szExeFile);  
         pi->pid = pe32.th32ProcessID;
         pi->ppid = pe32.th32ParentProcessID;
-        pi->priority = pe32.pcPriClassBase; // GetPriorityClass!!! check
+		ProcessPriorityToStringW(GetProcessPriorityClass(pi->pid), pi->szPriority, sizeof(pi->szPriority));
         GetProcessCmdLineW(pi->pid, &pi->cmdline, NULL);
 
         SetThreadList(pi->pid, pi);
@@ -147,6 +146,128 @@ $cleanup:
     return false;
 }
 
+bool Archive::ProcessPriorityToStringW(DWORD priority, LPWSTR buf, size_t bufsize)
+{
+	if(buf == NULL || bufsize == 0)
+		return false;
+
+	LPWSTR szPriority = L"n/a";
+
+	switch(priority)
+	{
+	case ABOVE_NORMAL_PRIORITY_CLASS:
+		szPriority = L"ABOVE_NORMAL_PRIORITY_CLASS";
+		break;
+	case BELOW_NORMAL_PRIORITY_CLASS:
+		szPriority = L"BELOW_NORMAL_PRIORITY_CLASS";
+		break;
+	case HIGH_PRIORITY_CLASS:
+		szPriority = L"HIGH_PRIORITY_CLASS";
+		break;
+	case IDLE_PRIORITY_CLASS:
+		szPriority = L"IDLE_PRIORITY_CLASS";
+		break;
+	case NORMAL_PRIORITY_CLASS:
+		szPriority = L"NORMAL_PRIORITY_CLASS";
+		break;
+	case REALTIME_PRIORITY_CLASS:
+		szPriority = L"REALTIME_PRIORITY_CLASS";
+		break;
+	}
+
+	try
+	{
+		HRESULT hr = StringCbCopyW(buf, bufsize, szPriority);
+		if(SUCCEEDED(hr))
+			return true;
+
+	}
+	catch(...)
+	{
+		wprintf(L"ProtectToStringW raise exception\n");
+	}
+
+	return false;
+}
+
+
+
+
+bool Archive::ThreadPriorityToStringW(DWORD priority, LPWSTR buf, size_t bufsize)
+{
+	if(buf == NULL || bufsize == 0)
+		return false;
+
+	LPWSTR szPriority = L"n/a";
+
+	switch(priority)
+	{
+	case THREAD_PRIORITY_ABOVE_NORMAL:
+		szPriority = L"THREAD_PRIORITY_ABOVE_NORMAL";
+		break;
+	case THREAD_PRIORITY_BELOW_NORMAL:
+		szPriority = L"THREAD_PRIORITY_BELOW_NORMAL";
+		break;
+	case THREAD_PRIORITY_HIGHEST:
+		szPriority = L"THREAD_PRIORITY_HIGHEST";
+		break;
+	case THREAD_PRIORITY_IDLE:
+		szPriority = L"THREAD_PRIORITY_IDLE";
+		break;
+	case THREAD_PRIORITY_LOWEST:
+		szPriority = L"THREAD_PRIORITY_LOWEST";
+		break;
+	case THREAD_PRIORITY_NORMAL:
+		szPriority = L"THREAD_PRIORITY_NORMAL";
+		break;
+	case THREAD_PRIORITY_TIME_CRITICAL:
+		szPriority = L"THREAD_PRIORITY_TIME_CRITICAL";
+		break;
+	}
+
+	try
+	{
+		HRESULT hr = StringCbCopyW(buf, bufsize, szPriority);
+		if(SUCCEEDED(hr))
+			return true;
+
+	}
+	catch(...)
+	{
+		wprintf(L"ProtectToStringW raise exception\n");
+	}
+
+	return false;
+}
+
+
+DWORD Archive::GetProcessPriorityClass(ULONG pid)
+{
+	DWORD priority;
+	HANDLE h = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, pid);
+	if(!h)
+		return 0;
+
+	priority = ::GetPriorityClass(h);
+	CloseHandle(h);
+
+	return priority;
+}
+
+
+DWORD Archive::GetThreadPriorityClass(ULONG tid)
+{
+	DWORD priority;
+	HANDLE h = OpenThread(THREAD_QUERY_INFORMATION, FALSE, tid);
+	if(!h)
+		return 0;
+
+	priority = ::GetThreadPriority(h);
+	CloseHandle(h);
+
+	return priority;
+}
+
 bool Archive::GetThreadStartAddress(ULONG tid, PVOID *address)
 {
     if(!address)
@@ -158,13 +279,19 @@ bool Archive::GetThreadStartAddress(ULONG tid, PVOID *address)
 
     hThread = OpenThread(THREAD_QUERY_INFORMATION, FALSE, tid);
     if(!hThread)
+	{
+		*address = 0;
         return false;
+	}
 
     status = pNtQIT(hThread, ThreadQuerySetWin32StartAddress, &ptr, sizeof(ptr), NULL);
     CloseHandle(hThread);
 
     if(!NT_SUCCESS(status))
+	{
+		*address = 0;
         return false;
+	}
 
     *address = ptr;
     return true;
@@ -256,10 +383,6 @@ PVOID Archive::GetPebAddress32(HANDLE hProcess)
     return pbi.PebBaseAddress;
 }
 
-PVOID Archive::GetPebAddressWow(HANDLE hProcess)
-{
-    return NULL;
-}
 
 PVOID64 Archive::GetPebAddress64(HANDLE hProcess)
 {
@@ -271,15 +394,15 @@ bool Archive::PrintModuleList(PNX_PROCESSINFO &pi)
     if(pi->mlist.empty())
         return false;
 
-    wprintf(L"\t======== M o d u l e   I n f o ========\n");
+    wprintf(L"\t====================== M o d u l e   I n f o ======================\n");
     PNX_MODULEINFO mi;
     for(mit = pi->mlist.begin(); mit != pi->mlist.end(); ++mit)
     {
         mi = *mit;
-        wprintf(L"\taddress : %08x\n", mi->address);
-        wprintf(L"\tname : %s\n", mi->name);
-        wprintf(L"\tsize : %s\n", mi->szSize);
-        wprintf(L"\tprotection : %d\n", mi->protection);
+		wprintf(L"%20s", mi->name);
+        wprintf(L"\t0x%08x", mi->address);
+        wprintf(L"\t%10s", mi->szSize);
+        wprintf(L"\t%s\n", mi->szProtect);
     }
 
     return true;
@@ -290,18 +413,51 @@ bool Archive::PrintThreadList(PNX_PROCESSINFO &pi)
     if(pi->tlist.empty())
         return false;
 
-    wprintf(L"\t======== T h r e a d   I n f o ========\n");
+    wprintf(L"\t====================== T h r e a d   I n f o ======================\n");
     PNX_THREADINFO ti;
     for(tit = pi->tlist.begin(); tit != pi->tlist.end(); ++tit)
     {
         ti = *tit;
-        wprintf(L"\ttid : %d\n", ti->tid);
-        wprintf(L"\tpriority : %d\n", ti->priority);
-        wprintf(L"\tstart address : %08x\n", ti->startaddress);
-        wprintf(L"\tmodule name : %s\n\n", ti->modulename);
+        wprintf(L"tid : %d\n", ti->tid);
+		wprintf(L"start address : 0x%08x(%s)\n", ti->startaddress, ti->modulename);
+        wprintf(L"priority : %s\n\n", ti->szPriority);
     }
 
     return true;
+}
+
+bool Archive::PrintProcessInfo(PNX_PROCESSINFO &pi)
+{
+	wprintf(L"\t====================== P r o c e s s   I n f o ======================\n");
+	wprintf(L"process name : %s\n", pi->name);
+	wprintf(L"Command Line : %s\n", pi->cmdline);
+	wprintf(L"pid          : %d\n", pi->pid);
+	wprintf(L"ppid         : %d\n", pi->ppid);
+	wprintf(L"priority     : %s\n\n", pi->szPriority);
+
+	return true;
+}
+
+bool Archive::PrintProcessInfoByPid(UINT pid)
+{
+	PNX_PROCESSINFO p;
+	for(pit = plist.begin(); pit!=plist.end(); ++pit)
+	{
+		p = *pit;
+		if(pid == p->pid)
+		{
+			PrintProcessInfo(p);
+			wprintf(L">>> press anykey....\n");
+			getchar();
+			PrintThreadList(p);
+			wprintf(L">>> press anykey....\n");
+			getchar();
+			PrintModuleList(p);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool Archive::PrintProcessList()
@@ -309,18 +465,15 @@ bool Archive::PrintProcessList()
     PNX_PROCESSINFO p;
     for(pit = plist.begin(); pit!=plist.end(); ++pit)
     {
-        p = *pit;
-        wprintf(L"%s\n", p->name);
-        wprintf(L"%s\n", p->cmdline);
-        wprintf(L"pid  : %d\n", p->pid);
-        wprintf(L"ppid : %d\n", p->ppid);
-        wprintf(L"priority : %d\n\n", p->priority);
+		p = *pit;
+		PrintProcessInfo(p);
         PrintThreadList(p);
         PrintModuleList(p);
     }
 
     return true;
 }
+
 
 bool Archive::CleanupProcessList()
 {

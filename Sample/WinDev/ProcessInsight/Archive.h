@@ -28,25 +28,23 @@ typedef NTSTATUS (NTAPI *_NtQueryInformationThread)(
     );
 
 
-#define NX_STRING_SIZE 32
-// SIGNITURE 추가?
+#define NX_STRING_SIZE 64
+// SIGNATURE 생략...
 typedef struct _NX_MODULEINFO
 {
     WCHAR name[MAX_PATH];
-    PVOID address;              /// 64bit 호환 되게 바꿔
+    PVOID address;              
     WCHAR szSize[NX_STRING_SIZE];
-    ULONG protection;
+    WCHAR szProtect[NX_STRING_SIZE];
 }NX_MODULEINFO, *PNX_MODULEINFO;
-
 
 typedef struct _NX_THREADINFO
 {
     WCHAR modulename[MAX_PATH];
     ULONG tid;
     PVOID startaddress;         /// 64bit 호환 되게 바꿔
-    ULONG priority;
+    WCHAR szPriority[NX_STRING_SIZE];
 }NX_THREADINFO, *PNX_THREADINFO;
-
 
 typedef struct _NX_PROCESSINFO
 {
@@ -54,7 +52,7 @@ typedef struct _NX_PROCESSINFO
     WCHAR *cmdline;             ///// 메모리 해제~~!! 주의  아님 string으로 대체
     ULONG pid;
     ULONG ppid;
-    ULONG priority;
+    WCHAR szPriority[NX_STRING_SIZE];
     list<PNX_MODULEINFO> mlist;        // 메모리 해제
     list<PNX_THREADINFO> tlist;        // 메모리 해제
 }NX_PROCESSINFO, *PNX_PROCESSINFO;
@@ -114,7 +112,7 @@ protected:
 class Archive : public Sysinfo
 {
 private:
-    list<PNX_PROCESSINFO> plist;           // pid기준으로 맵으로 변경
+    list<PNX_PROCESSINFO> plist;           
     list<PNX_MODULEINFO>::iterator mit;
     list<PNX_THREADINFO>::iterator tit;
     list<PNX_PROCESSINFO>::iterator pit;
@@ -126,28 +124,42 @@ private:
     bool SetDebugPrivilege(void);
 
     PVOID GetPebAddress32(HANDLE hProcess);         
-    PVOID GetPebAddressWow(HANDLE hProcess);
     PVOID64 GetPebAddress64(HANDLE hProcess);
 
     bool GetProcessCmdLineW(ULONG pid, PWCHAR *cmdline, PDWORD readed);
     bool GetThreadStartAddress(ULONG tid, PVOID *address);
-                                        
+
+	bool PrintProcessInfo(PNX_PROCESSINFO &pi);
+	bool PrintThreadList(PNX_PROCESSINFO &pi);
+	bool PrintModuleList(PNX_PROCESSINFO &pi);
+
+	bool SetThreadList(ULONG pid, PNX_PROCESSINFO &pi);
+	bool SetModuleList(ULONG pid, PNX_PROCESSINFO &pi);
+
+
+	DWORD GetProcessPriorityClass(ULONG pid);
+	DWORD GetThreadPriorityClass(ULONG tid);
+	static bool ProcessPriorityToStringW(DWORD priority, LPWSTR buf, size_t bufsize);
+	static bool ThreadPriorityToStringW(DWORD priority, LPWSTR buf, size_t bufsize);
+	                                    
 public:
     bool SetProcessList(void);
-    bool SetThreadList(ULONG pid, PNX_PROCESSINFO &pi);
-    bool SetModuleList(ULONG pid, PNX_PROCESSINFO &pi);
 
+	bool PrintProcessInfoByPid(UINT pid);
     bool PrintProcessList(void);
-    bool PrintThreadList(PNX_PROCESSINFO &pi);
-    bool PrintModuleList(PNX_PROCESSINFO &pi);
 
     Archive()
     {
         bool b = SetDebugPrivilege();
-        if(!b) cout << "SetPrivilege fail\n";
+#if _DEBUG
+        if(!b)
+			wprintf(L"SetPrivilege fail\n");
+#endif
         b = Init();
-        if(!b) cout << "sysinfo init fail\n";
-        printf("Init(%d)\n", b);
+#ifdef _DEBUG
+        if(!b) wprintf(L"sysinfo init fail\n");
+		wprintf(L"Init(%d)\n", b);
+#endif
     }
     ~Archive()
     {

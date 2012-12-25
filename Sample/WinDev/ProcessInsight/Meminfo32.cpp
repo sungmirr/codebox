@@ -147,7 +147,7 @@ bool Meminfo32::ProtectToStringW(DWORD protect, LPWSTR buf, size_t bufsize)
     return false;
 }
 
-bool Meminfo32::GetSizeToUnit(ULONG size, LPWSTR buf, size_t bufsize)
+bool Meminfo32::SizeToStringW(DOUBLE size, LPWSTR buf, size_t bufsize)
 {
     wchar_t *unit[4] = {L"bytes", L"Kb", L"Mb", L"Gb"};
     int iKs=0;
@@ -159,7 +159,7 @@ bool Meminfo32::GetSizeToUnit(ULONG size, LPWSTR buf, size_t bufsize)
         {
             if(size > Ks)
             {
-                size = (ULONG)size /Ks;
+                size = size /Ks;
                 iKs++;
             }
             else
@@ -168,7 +168,7 @@ bool Meminfo32::GetSizeToUnit(ULONG size, LPWSTR buf, size_t bufsize)
             }
         }
 
-        HRESULT hr = StringCbPrintfW(buf, bufsize, L"%0.2f %s\n", size, unit[iKs]);
+        HRESULT hr = StringCbPrintfW(buf, bufsize, L"%0.2f %s", size, unit[iKs]);
         if(SUCCEEDED(hr))
             return true;
     }
